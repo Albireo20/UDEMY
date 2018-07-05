@@ -8,7 +8,7 @@ GAME RULES:
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
-var scores, roundScore, activePlayer, diceDOM, gamePlaying;
+var scores, roundScore, activePlayer, diceDOM, gamePlaying, previousDiceRoll, diceRoll;
 
 initializeGame();
 
@@ -23,11 +23,27 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
 	
 		// 3. Update Round Score, only IF the rolled number was NOT 1!
 		if (dice !== 1) {
-			//add score
-			roundScore += dice;
-			document.querySelector('#current-' + activePlayer).textContent = roundScore;
+				//add score
+				
+				diceRoll += dice;
+				roundScore += diceRoll;
+				//console.log('DiceRoll: ' + diceRoll);
+				//console.log('roundScore: ' + roundScore);
+				//console.log('Previous Dice Roll: ' + previousDiceRoll);
+				if (previousDiceRoll == 6 && diceRoll == 6) {
+					//console.log('ACTIVE');
+					scores[activePlayer] = 0;
+					document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
+					nextActivePlayer();
+				}	else {
+					document.querySelector('#current-' + activePlayer).textContent = roundScore;
+					previousDiceRoll = diceRoll;
+					diceRoll = 0;
+					
+					//console.log('Previous Dice Roll 2: ' + previousDiceRoll);
+				}
 		} else {
-			nextActivePlayer();
+				nextActivePlayer();
 		}
 	}
 	
@@ -61,6 +77,8 @@ function nextActivePlayer() {
 	//Next Player
 		activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;  //Turnary Operator
 		roundScore = 0;
+		diceRoll = 0;
+		previousDiceRoll = 0;
 		
 		document.getElementById('current-0').textContent = '0';
 		document.getElementById('current-1').textContent = '0';
@@ -82,6 +100,8 @@ function initializeGame() {
 	activePlayer = 0;
 	diceDOM = document.querySelector('.dice');
 	gamePlaying = true;
+	diceRoll = 0;
+	previousDiceRoll = 0;
 	
 	document.querySelector('.dice').style.display = 'none';
 
